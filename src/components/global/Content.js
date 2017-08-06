@@ -9,10 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import FormsyText from 'formsy-material-ui/lib/FormsyText';
 import FormsySelect from 'formsy-material-ui/lib/FormsySelect';
-
-
 import axios from 'axios';
-
 import {
     Table,
     TableBody,
@@ -21,6 +18,9 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
+
+
+import FormAddProduct from './FormAddProduct'
 
 import './css/Content.css';
 
@@ -36,9 +36,7 @@ class Content extends Component {
         }
         this.getAllProducts = this.getAllProducts.bind(this);
         this.getAllCategories = this.getAllCategories.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this.disableButton = this.disableButton.bind(this);
-        this.enableButton = this.enableButton.bind(this);
+        this.addNewProduct = this.addNewProduct.bind(this);
         
         Formsy.addValidationRule('IsEmpty', function (values, value, array) {
             //console.log(value);
@@ -51,11 +49,11 @@ class Content extends Component {
             
         });
     }
-    _handleSubmit(model){
+    addNewProduct(model){
         let self = this;
         axios.post('http://localhost:9001/products/create_product', { productName: model.newProductName, categoryId: model.newProductCategory, price: model.newProductPrice})
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 self.getAllProducts();
             }).catch(function (error) {
                 console.log("Hubo un error intentando obtener datos:");
@@ -63,20 +61,6 @@ class Content extends Component {
             })
     }
 
-    _handleChange(){
-
-    }
-
-    enableButton() {
-        this.setState({
-            canSubmit: true
-        });
-    }
-    disableButton() {
-        this.setState({
-            canSubmit: false
-        });
-    }
 
     getAllProducts(){
         let self = this;
@@ -160,48 +144,7 @@ class Content extends Component {
                         </FlatButton>
                     </CardActions>
                 </Card>
-                <Formsy.Form
-                    onValidSubmit={this._handleSubmit}
-                    preventExternalInvalidation
-                    onValid={this.enableButton} 
-                    onInvalid={this.disableButton}
-                >
-                    {
-                        this.props.openAddNewProduct == true ? 
-                            <Card>
-                                <CardHeader
-                                    title="Agregar Producto"
-                                    subtitle="en base de datos"
-                                />
-                                <CardText>
-                                    <div className="FormNewProduct">
-                                        <div>
-                                            <FormsyText name="newProductName" hintText="Nombre del producto" required />
-                                        </div>
-                                        <div>
-                                            <FormsyText name="newProductPrice" hintText="Precio del producto" validations="isNumeric" validationError="Debe insertar un valor numérico" required />
-                                        </div>
-                                        <div>
-                                            <FormsySelect name="newProductCategory" floatingLabelText="Categoría" value={0} disabled={false} >
-                                                {categories.map((category, i) => <MenuItem key={i} value={category.id} primaryText={category.name} />)}
-                                            </FormsySelect>
-                                        </div>
-
-                                    </div>
-                                </CardText>
-                                <CardActions>
-                                    <FlatButton type="submit" formNoValidate={true} disabled={!this.state.canSubmit}>
-                                        Actualizar
-                                    </FlatButton>
-                                    <FlatButton onClick={this.props.TriggerCloseNewProduct}>
-                                        Cancelar
-                                    </FlatButton>
-                                </CardActions>
-                            </Card>               
-                        : ''
-                    }
-
-                </Formsy.Form>
+                {this.props.openAddNewProduct == true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct}/> : ''}
             </div>
         );
     }
