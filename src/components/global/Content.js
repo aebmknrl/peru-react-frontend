@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-
-import Formsy from 'formsy-react';
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import { AxiosProvider, Get } from 'react-axios'
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import TextField from 'material-ui/TextField';
-import FormsyText from 'formsy-material-ui/lib/FormsyText';
-import FormsySelect from 'formsy-material-ui/lib/FormsySelect';
 import axios from 'axios';
 import {
     Table,
@@ -18,13 +10,10 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
-
-
+import IconButton from 'material-ui/IconButton';
 import FormAddProduct from './FormAddProduct'
-
 import './css/Content.css';
-
-
+import { grey700 } from 'material-ui/styles/colors';
 
 class Content extends Component {
     constructor (){
@@ -37,17 +26,7 @@ class Content extends Component {
         this.getAllProducts = this.getAllProducts.bind(this);
         this.getAllCategories = this.getAllCategories.bind(this);
         this.addNewProduct = this.addNewProduct.bind(this);
-        
-        Formsy.addValidationRule('IsEmpty', function (values, value, array) {
-            //console.log(value);
-            if(value == undefined || value == '' || value == null)  {
-
-                return false;
-            } else {
-                return true;
-            }
-            
-        });
+    
     }
     addNewProduct(model){
         let self = this;
@@ -123,6 +102,7 @@ class Content extends Component {
                                     <TableHeaderColumn>Nombre</TableHeaderColumn>
                                     <TableHeaderColumn>Precio</TableHeaderColumn>
                                     <TableHeaderColumn>Categoría</TableHeaderColumn>
+                                    <TableHeaderColumn>Acciones</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -132,6 +112,7 @@ class Content extends Component {
                                         <TableRowColumn>{product.name}</TableRowColumn>
                                         <TableRowColumn>{product.price}</TableRowColumn>
                                         <TableRowColumn>{product.category.name}</TableRowColumn>
+                                        <TableRowColumn><IconButton tooltip="Font Icon" iconStyle={{color: grey700}} iconClassName="material-icons">create</IconButton></TableRowColumn>
                                     </TableRow>
                                 )}
 
@@ -144,7 +125,7 @@ class Content extends Component {
                         </FlatButton>
                     </CardActions>
                 </Card>
-                {this.props.openAddNewProduct == true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct}/> : ''}
+                {this.props.openAddNewProduct === true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
             </div>
         );
     }
