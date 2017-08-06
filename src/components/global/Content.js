@@ -15,6 +15,8 @@ import FormAddProduct from './FormAddProduct'
 import FormEditProduct from './FormEditProduct'
 import './css/Content.css';
 import { grey700 } from 'material-ui/styles/colors';
+import Dialog from 'material-ui/Dialog';
+
 
 class Content extends Component {
     constructor (){
@@ -24,13 +26,18 @@ class Content extends Component {
             categories: null,
             canSubmit: false,
             openEditProduct: false,
-            productToEdit: null
+            productToEdit: null,
+            productToDelete:null,
+            openModalDeleteProduct: false
         }
         this.getAllProducts = this.getAllProducts.bind(this);
         this.getAllCategories = this.getAllCategories.bind(this);
         this.addNewProduct = this.addNewProduct.bind(this);
         this.editProduct = this.editProduct.bind(this);
         this.TriggerCloseEditProduct = this.TriggerCloseEditProduct.bind(this);
+        this.handleOpenModalDeleteProduct = this.handleOpenModalDeleteProduct.bind(this);
+        this.handleCloseModalDeleteProduct = this.handleCloseModalDeleteProduct.bind(this);
+        this.deleteProduct = this.deleteProduct.bind(this);
     
     }
     addNewProduct(model){
@@ -38,6 +45,7 @@ class Content extends Component {
         axios.post('http://localhost:9001/products/create_product', { productName: model.newProductName, categoryId: model.newProductCategory, price: model.newProductPrice})
             .then(function (response) {
                 //console.log(response);
+                self.props.TriggerCloseNewProduct();
                 self.getAllProducts();
             }).catch(function (error) {
                 console.log("Hubo un error intentando obtener datos:");
@@ -45,7 +53,7 @@ class Content extends Component {
             })
     }
     editProduct(model){
-        console.log(model);
+        //console.log(model);
          let self = this;
          axios.post('http://localhost:9001/products/update_product', { productId: model.editProductId, productName: model.editProductName, categoryId: model.editProductCategory, price: model.editProductPrice})
              .then(function (response) {
@@ -56,6 +64,34 @@ class Content extends Component {
                  console.log("Hubo un error intentando obtener datos:");
                  console.log(error);
              })
+    }
+
+    deleteProduct(){
+        let self = this;
+        var productToDelete = self.state.productToDelete;
+        axios.delete('http://localhost:9001/products/delete_product', {data: {productId: productToDelete.id}})
+            .then(function (response) {
+                self.handleCloseModalDeleteProduct();
+                self.getAllProducts();
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
+    handleOpenModalDeleteProduct(model){
+        this.setState({
+            productToDelete:model,
+            openModalDeleteProduct: true
+        })
+
+    }
+
+    handleCloseModalDeleteProduct(){
+        this.setState({
+            productToDelete: null,
+            openModalDeleteProduct: false
+        })
     }
 
     TriggerCloseEditProduct(){
@@ -103,6 +139,19 @@ class Content extends Component {
         this.getAllCategories();
     }
     render() {
+        const actions = [
+            <FlatButton
+                label="Cancelar"
+                primary={true}
+                onTouchTap={this.handleCloseModalDeleteProduct}
+            />,
+            <FlatButton
+                label="Eliminar"
+                primary={true}
+                onTouchTap={this.deleteProduct}
+            />,
+        ];
+
         var products = [];
         var categories = [];
         
@@ -143,7 +192,24 @@ class Content extends Component {
                                         <TableRowColumn>{product.name}</TableRowColumn>
                                         <TableRowColumn>{product.price}</TableRowColumn>
                                         <TableRowColumn>{product.category.name}</TableRowColumn>
-                                        <TableRowColumn><IconButton onClick={()=>{this.TriggerOpenEditProduct(product)}} tooltip="Font Icon" iconStyle={{color: grey700}} iconClassName="material-icons">create</IconButton></TableRowColumn>
+                                        <TableRowColumn style={{ overflow: 'visible' }}>
+                                            <IconButton 
+                                                onClick={()=>{this.TriggerOpenEditProduct(product)}} 
+                                                tooltip="Editar" 
+                                                iconStyle={{color: grey700}} 
+                                                iconClassName="material-icons"
+                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
+                                            >create
+                                            </IconButton>
+                                            <IconButton 
+                                                onClick={() => { this.handleOpenModalDeleteProduct(product)}} 
+                                                tooltip="Eliminar" 
+                                                iconStyle={{color: grey700}} 
+                                                iconClassName="material-icons"
+                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
+                                            >remove_circle
+                                            </IconButton>
+                                        </TableRowColumn>
                                     </TableRow>
                                 )}
 
@@ -158,6 +224,16 @@ class Content extends Component {
                 </Card>
                 {this.props.openAddNewProduct === true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
                 {this.state.openEditProduct === true ? <FormEditProduct productToEdit={this.state.productToEdit} editProduct={this.editProduct} TriggerCloseEditProduct={this.TriggerCloseEditProduct} listOfCategories={categories}/> : ''}
+
+                <Dialog
+                    title="Confirmar Eliminar"
+                    actions={actions}
+                    modal={false}
+                    open={this.state.openModalDeleteProduct}
+                    onRequestClose={this.handleCloseModalDeleteProduct}
+                >
+                    ¿Está seguro que desea eliminar este producto?
+                </Dialog>
             </div>
         );
     }
