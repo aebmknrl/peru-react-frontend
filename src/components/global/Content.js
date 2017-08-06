@@ -49,7 +49,7 @@ class Content extends Component {
          let self = this;
          axios.post('http://localhost:9001/products/update_product', { productId: model.editProductId, productName: model.editProductName, categoryId: model.editProductCategory, price: model.editProductPrice})
              .then(function (response) {
-                 console.log(response);
+                 //console.log(response);
                  self.TriggerCloseEditProduct();
                  self.getAllProducts();
              }).catch(function (error) {
