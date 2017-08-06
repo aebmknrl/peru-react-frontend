@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 import axios from 'axios';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
-import IconButton from 'material-ui/IconButton';
+
 import FormAddProduct from './FormAddProduct'
 import FormEditProduct from './FormEditProduct'
+import ProductList from './ProductList'
+
 import './css/Content.css';
-import { grey700 } from 'material-ui/styles/colors';
-import Dialog from 'material-ui/Dialog';
+
 
 
 class Content extends Component {
@@ -35,6 +28,7 @@ class Content extends Component {
         this.addNewProduct = this.addNewProduct.bind(this);
         this.editProduct = this.editProduct.bind(this);
         this.TriggerCloseEditProduct = this.TriggerCloseEditProduct.bind(this);
+        this.TriggerOpenEditProduct = this.TriggerOpenEditProduct.bind(this);
         this.handleOpenModalDeleteProduct = this.handleOpenModalDeleteProduct.bind(this);
         this.handleCloseModalDeleteProduct = this.handleCloseModalDeleteProduct.bind(this);
         this.deleteProduct = this.deleteProduct.bind(this);
@@ -169,59 +163,8 @@ class Content extends Component {
 
         return (
             <div className="Content">
-                <Card>
-                    <CardHeader
-                        title="Lista de Productos"
-                        subtitle="en base de datos"
-                    />
-                    <CardText>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHeaderColumn>ID</TableHeaderColumn>
-                                    <TableHeaderColumn>Nombre</TableHeaderColumn>
-                                    <TableHeaderColumn>Precio</TableHeaderColumn>
-                                    <TableHeaderColumn>Categoría</TableHeaderColumn>
-                                    <TableHeaderColumn>Acciones</TableHeaderColumn>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {products.map((product,i) => 
-                                    <TableRow key={i}>
-                                        <TableRowColumn>{product.id}</TableRowColumn>
-                                        <TableRowColumn>{product.name}</TableRowColumn>
-                                        <TableRowColumn>{product.price}</TableRowColumn>
-                                        <TableRowColumn>{product.category.name}</TableRowColumn>
-                                        <TableRowColumn style={{ overflow: 'visible' }}>
-                                            <IconButton 
-                                                onClick={()=>{this.TriggerOpenEditProduct(product)}} 
-                                                tooltip="Editar" 
-                                                iconStyle={{color: grey700}} 
-                                                iconClassName="material-icons"
-                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
-                                            >create
-                                            </IconButton>
-                                            <IconButton 
-                                                onClick={() => { this.handleOpenModalDeleteProduct(product)}} 
-                                                tooltip="Eliminar" 
-                                                iconStyle={{color: grey700}} 
-                                                iconClassName="material-icons"
-                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
-                                            >remove_circle
-                                            </IconButton>
-                                        </TableRowColumn>
-                                    </TableRow>
-                                )}
-
-                            </TableBody>
-                        </Table>                                         
-                    </CardText>
-                    <CardActions>
-                        <FlatButton onClick={() => { this.getAllProducts(); }}>
-                            Actualizar
-                        </FlatButton>
-                    </CardActions>
-                </Card>
+                
+                {this.state.products ? <ProductList productList={products} getAllProducts={this.getAllProducts} openDeleteProductModal={this.handleOpenModalDeleteProduct} openEditProduct={this.TriggerOpenEditProduct}/> : 'No existen productos en el sistema.'}
                 {this.props.openAddNewProduct === true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
                 {this.state.openEditProduct === true ? <FormEditProduct productToEdit={this.state.productToEdit} editProduct={this.editProduct} TriggerCloseEditProduct={this.TriggerCloseEditProduct} listOfCategories={categories}/> : ''}
 

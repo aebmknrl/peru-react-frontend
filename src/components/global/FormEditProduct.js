@@ -46,23 +46,27 @@ class FormEditProduct extends Component {
                         subtitle="en base de datos"
                     />
                     <CardText>
-                        <div className="FormEditProduct">
-                            <div>
-                                <FormsyText name="editProductId" value={productToEdit.id} hintText="ID del producto" required readOnly />
-                            </div>
-                            <div>
-                                <FormsyText name="editProductName" value={productToEdit.name} hintText="Nombre del producto" required />
-                            </div>
-                            <div>
-                                <FormsyText name="editProductPrice" value={productToEdit.price} hintText="Precio del producto" validations="isNumeric" validationError="Debe insertar un valor numérico" required />
-                            </div>
-                            <div>
-                                <FormsySelect name="editProductCategory" floatingLabelText="Categoría" value={productToEdit.category.id} disabled={false} >
-                                    {categories.map((category, i) => <MenuItem key={i} value={category.id} primaryText={category.name} />)}
-                                </FormsySelect>
-                            </div>
+                        {
+                            categories.length <= 0 ? 'No hay categorías en el sistema. Agrege una categoría primero.' : 
+                                <div className="FormEditProduct">
+                                    <div>
+                                        <FormsyText name="editProductId" value={productToEdit.id} hintText="ID del producto" required readOnly />
+                                    </div>
+                                    <div>
+                                        <FormsyText name="editProductName" value={productToEdit.name} hintText="Nombre del producto" required />
+                                    </div>
+                                    <div>
+                                        <FormsyText name="editProductPrice" value={productToEdit.price} hintText="Precio del producto" validations="isNumeric" validationError="Debe insertar un valor numérico" required />
+                                    </div>
+                                    <div>
+                                        <FormsySelect name="editProductCategory" floatingLabelText="Categoría" value={productToEdit.category.id} disabled={false} >
+                                            {categories.map((category, i) => <MenuItem key={i} value={category.id} primaryText={category.name} />)}
+                                        </FormsySelect>
+                                    </div>
 
-                        </div>
+                                </div>
+                        }
+
                     </CardText>
                     <CardActions>
                         <FlatButton type="submit" formNoValidate={true} disabled={!this.state.canSubmit}>
