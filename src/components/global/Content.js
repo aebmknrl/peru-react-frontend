@@ -12,6 +12,7 @@ import {
 } from 'material-ui/Table';
 import IconButton from 'material-ui/IconButton';
 import FormAddProduct from './FormAddProduct'
+import FormEditProduct from './FormEditProduct'
 import './css/Content.css';
 import { grey700 } from 'material-ui/styles/colors';
 
@@ -21,11 +22,15 @@ class Content extends Component {
         this.state = {
             products: null,
             categories: null,
-            canSubmit: false
+            canSubmit: false,
+            openEditProduct: false,
+            productToEdit: null
         }
         this.getAllProducts = this.getAllProducts.bind(this);
         this.getAllCategories = this.getAllCategories.bind(this);
         this.addNewProduct = this.addNewProduct.bind(this);
+        this.editProduct = this.editProduct.bind(this);
+        this.TriggerCloseEditProduct = this.TriggerCloseEditProduct.bind(this);
     
     }
     addNewProduct(model){
@@ -39,7 +44,33 @@ class Content extends Component {
                 console.log(error);
             })
     }
+    editProduct(model){
+        console.log(model);
+         let self = this;
+         axios.post('http://localhost:9001/products/update_product', { productId: model.editProductId, productName: model.editProductName, categoryId: model.editProductCategory, price: model.editProductPrice})
+             .then(function (response) {
+                 console.log(response);
+                 self.TriggerCloseEditProduct();
+                 self.getAllProducts();
+             }).catch(function (error) {
+                 console.log("Hubo un error intentando obtener datos:");
+                 console.log(error);
+             })
+    }
 
+    TriggerCloseEditProduct(){
+        this.setState({
+            openEditProduct: false,
+            productToEdit: null
+        })
+    }
+
+    TriggerOpenEditProduct(model){
+         this.setState({
+             openEditProduct: true,
+             productToEdit: model
+         })
+    }
 
     getAllProducts(){
         let self = this;
@@ -112,7 +143,7 @@ class Content extends Component {
                                         <TableRowColumn>{product.name}</TableRowColumn>
                                         <TableRowColumn>{product.price}</TableRowColumn>
                                         <TableRowColumn>{product.category.name}</TableRowColumn>
-                                        <TableRowColumn><IconButton tooltip="Font Icon" iconStyle={{color: grey700}} iconClassName="material-icons">create</IconButton></TableRowColumn>
+                                        <TableRowColumn><IconButton onClick={()=>{this.TriggerOpenEditProduct(product)}} tooltip="Font Icon" iconStyle={{color: grey700}} iconClassName="material-icons">create</IconButton></TableRowColumn>
                                     </TableRow>
                                 )}
 
@@ -126,6 +157,7 @@ class Content extends Component {
                     </CardActions>
                 </Card>
                 {this.props.openAddNewProduct === true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
+                {this.state.openEditProduct === true ? <FormEditProduct productToEdit={this.state.productToEdit} editProduct={this.editProduct} TriggerCloseEditProduct={this.TriggerCloseEditProduct} listOfCategories={categories}/> : ''}
             </div>
         );
     }
