@@ -1,15 +1,19 @@
+// Dependencies
 import React, { Component } from 'react';
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
 import axios from 'axios';
+import Dialog from 'material-ui/Dialog';
 
+// Components
 import FormAddProduct from './FormAddProduct'
 import FormEditProduct from './FormEditProduct'
 import ProductList from './ProductList'
+import CategoryList from './CategoryList'
+import FormAddCategory from './FormAddCategory'
+import FormEditCategory from './FormEditCategory'
 
+// Styles
 import './css/Content.css';
-
-
 
 class Content extends Component {
     constructor (){
@@ -21,7 +25,12 @@ class Content extends Component {
             openEditProduct: false,
             productToEdit: null,
             productToDelete:null,
-            openModalDeleteProduct: false
+            openModalDeleteProduct: false,
+            showAddNewCategory: false,
+            openModalDeleteCategory: false,
+            categoryToDelete: null,
+            categoryToEdit:null,
+            openEditCategory: false
         }
         this.getAllProducts = this.getAllProducts.bind(this);
         this.getAllCategories = this.getAllCategories.bind(this);
@@ -32,7 +41,16 @@ class Content extends Component {
         this.handleOpenModalDeleteProduct = this.handleOpenModalDeleteProduct.bind(this);
         this.handleCloseModalDeleteProduct = this.handleCloseModalDeleteProduct.bind(this);
         this.deleteProduct = this.deleteProduct.bind(this);
-    
+        this.showAddNewCategory = this.showAddNewCategory.bind(this);
+        this.closeAddNewCategory = this.closeAddNewCategory.bind(this);
+        this.addNewCategory = this.addNewCategory.bind(this);
+        this.handleCloseModalDeleteCategory = this.handleCloseModalDeleteCategory.bind(this);
+        this.handleOpenModalDeleteCategory = this.handleOpenModalDeleteCategory.bind(this);
+        this.deleteCategory = this.deleteCategory.bind(this);
+        this.openEditCategory = this.openEditCategory.bind(this);
+        this.closeEditCategory = this.closeEditCategory.bind(this);
+        this.editCategory = this.editCategory.bind(this);
+        
     }
     addNewProduct(model){
         let self = this;
@@ -73,6 +91,72 @@ class Content extends Component {
             })
     }
 
+
+    getAllProducts() {
+        let self = this;
+        axios.get('http://localhost:9001/products/get_product/0')
+            .then(function (response) {
+                self.setState({
+                    products: response.data
+                })
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
+    getAllCategories() {
+        let self = this;
+        axios.get('http://localhost:9001/products/get_category/0')
+            .then(function (response) {
+                self.setState({
+                    categories: response.data
+                })
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
+    addNewCategory(model) {
+        let self = this;
+        axios.post('http://localhost:9001/products/create_category', { categoryName: model.newCategoryName })
+            .then(function (response) {
+                //console.log(response);
+                self.closeAddNewCategory();
+                self.getAllCategories();
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
+    deleteCategory() {
+        let self = this;
+        var categoryToDelete = self.state.categoryToDelete;
+        axios.delete('http://localhost:9001/products/delete_category', { data: { categoryId: categoryToDelete.id } })
+            .then(function (response) {
+                self.handleCloseModalDeleteCategory();
+                self.getAllCategories();
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
+    editCategory(model){
+        let self = this;
+        axios.post('http://localhost:9001/products/update_category', { categoryId: model.editCategoryId, categoryName: model.editCategoryName })
+            .then(function (response) {
+                //console.log(response);
+                self.closeEditCategory()
+                self.getAllCategories();
+            }).catch(function (error) {
+                console.log("Hubo un error intentando obtener datos:");
+                console.log(error);
+            })
+    }
+
     handleOpenModalDeleteProduct(model){
         this.setState({
             productToDelete:model,
@@ -102,31 +186,46 @@ class Content extends Component {
          })
     }
 
-    getAllProducts(){
-        let self = this;
-        axios.get('http://localhost:9001/products/get_product/0')
-            .then(function (response){
-                self.setState({
-                    products: response.data
-                })
-            }).catch(function(error){
-                console.log("Hubo un error intentando obtener datos:");
-                console.log(error);
-            })
+    showAddNewCategory(){
+        this.setState({
+            showAddNewCategory: true
+        })
+    }
+    closeAddNewCategory(){
+        this.setState({
+            showAddNewCategory: false
+        })
     }
 
-    getAllCategories() {
-        let self = this;
-        axios.get('http://localhost:9001/products/get_category/0')
-            .then(function (response) {
-                self.setState({
-                    categories: response.data
-                })
-            }).catch(function (error) {
-                console.log("Hubo un error intentando obtener datos:");
-                console.log(error);
-            })
+    handleOpenModalDeleteCategory(model) {
+        console.log(model);
+        this.setState({
+            categoryToDelete: model,
+            openModalDeleteCategory: true
+        })
+
     }
+
+    handleCloseModalDeleteCategory() {
+        this.setState({
+            categoryToDelete: null,
+            openModalDeleteCategory: false
+        })
+    }
+
+    openEditCategory(model){
+        this.setState({
+            categoryToEdit: model,
+            openEditCategory: true
+        })
+    }
+    closeEditCategory(){
+        this.setState({
+            categoryToEdit: null,
+            openEditCategory: false
+        })
+    }
+
 
     componentDidMount() {
         this.getAllProducts();
@@ -145,9 +244,22 @@ class Content extends Component {
                 onTouchTap={this.deleteProduct}
             />,
         ];
+        const actionsCategory = [
+            <FlatButton
+                label="Cancelar"
+                primary={true}
+                onTouchTap={this.handleCloseModalDeleteCategory}
+            />,
+            <FlatButton
+                label="Eliminar"
+                primary={true}
+                onTouchTap={this.deleteCategory}
+            />,
+        ];
 
         var products = [];
         var categories = [];
+        
         
         if(this.state.products){
             products = this.state.products;
@@ -160,22 +272,33 @@ class Content extends Component {
             categories = this.state.categories;
             //console.log(categories);
         }
-
         return (
             <div className="Content">
                 
-                {this.state.products ? <ProductList productList={products} getAllProducts={this.getAllProducts} openDeleteProductModal={this.handleOpenModalDeleteProduct} openEditProduct={this.TriggerOpenEditProduct}/> : 'No existen productos en el sistema.'}
-                {this.props.openAddNewProduct === true ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
-                {this.state.openEditProduct === true ? <FormEditProduct productToEdit={this.state.productToEdit} editProduct={this.editProduct} TriggerCloseEditProduct={this.TriggerCloseEditProduct} listOfCategories={categories}/> : ''}
+                {this.state.products && this.props.openCategoryArea === false ? <ProductList productList={products} getAllProducts={this.getAllProducts} openDeleteProductModal={this.handleOpenModalDeleteProduct} openEditProduct={this.TriggerOpenEditProduct} /> : (this.props.openCategoryArea === false? 'No existen productos en el sistema.' : '')}
+                {this.props.openAddNewProduct === true && this.props.openCategoryArea === false ? <FormAddProduct listOfCategories={categories} addNewProduct={this.addNewProduct} TriggerCloseNewProduct={this.props.TriggerCloseNewProduct}/> : ''}
+                {this.state.openEditProduct === true && this.props.openCategoryArea === false ? <FormEditProduct productToEdit={this.state.productToEdit} editProduct={this.editProduct} TriggerCloseEditProduct={this.TriggerCloseEditProduct} listOfCategories={categories}/> : ''}
+                {this.props.openCategoryArea === true ? <CategoryList categoriesList={categories} openEditCategory={this.openEditCategory} getAllCategories={this.getAllCategories} closeCategoryArea={this.props.TriggerCloseCategoryArea} showAddNewCategory={this.showAddNewCategory} openDeleteCategoryModal={this.handleOpenModalDeleteCategory}/> : ''}
+                {this.state.showAddNewCategory === true ? <FormAddCategory addNewCategory={this.addNewCategory} TriggerCloseAddNewCategory={this.closeAddNewCategory} /> : ''}
+                {this.props.openCategoryArea === true && this.state.openEditCategory === true ? <FormEditCategory categoryToEdit={this.state.categoryToEdit} TriggerCloseEditCategory={this.closeEditCategory} editCategory={this.editCategory} /> : ''}
 
                 <Dialog
                     title="Confirmar Eliminar"
                     actions={actions}
                     modal={false}
-                    open={this.state.openModalDeleteProduct}
+                    open={this.state.openModalDeleteCategory}
                     onRequestClose={this.handleCloseModalDeleteProduct}
                 >
                     ¿Está seguro que desea eliminar este producto?
+                </Dialog>
+                <Dialog
+                    title="Confirmar Eliminar"
+                    actions={actionsCategory}
+                    modal={false}
+                    open={this.state.openModalDeleteCategory}
+                    onRequestClose={this.handleCloseModalDeleteCategory}
+                >
+                    ¿Está seguro que desea eliminar esta categoría?
                 </Dialog>
             </div>
         );

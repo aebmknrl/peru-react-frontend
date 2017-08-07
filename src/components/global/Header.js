@@ -24,6 +24,7 @@ class Header extends Component {
                 targetOrigin={{ horizontal: 'left', vertical: 'top' }}
               >
                 <MenuItem primaryText="Nuevo Producto" onClick={this.props.TriggerOpenNewProduct} />
+                <MenuItem primaryText="Gestionar Categorías" onClick={this.props.TriggerOpenCategoryArea} />
               </IconMenu>
               </div>
           }

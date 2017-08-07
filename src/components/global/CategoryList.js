@@ -15,14 +15,15 @@ import { grey700 } from 'material-ui/styles/colors';
 
 
 
-class ProductList extends Component {
-    render() {
-        var products = this.props.productList;
-        return (
-            <div className="ProductList">
+class CategoryList extends Component {
+    render(){
+        var categories = this.props.categoriesList;
+        return(
+            <div className="CategoryList">
+                {categories ? 
                 <Card>
                     <CardHeader
-                        title="Lista de Productos"
+                        title="Lista de Categorías"
                         subtitle="en base de datos"
                     />
                     <CardText>
@@ -31,33 +32,28 @@ class ProductList extends Component {
                                 <TableRow>
                                     <TableHeaderColumn>ID</TableHeaderColumn>
                                     <TableHeaderColumn>Nombre</TableHeaderColumn>
-                                    <TableHeaderColumn>Precio</TableHeaderColumn>
-                                    <TableHeaderColumn>Categoría</TableHeaderColumn>
-                                    <TableHeaderColumn>Acciones</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {products.map((product, i) =>
+                                    {categories.map((category, i) =>
                                     <TableRow key={i}>
-                                        <TableRowColumn>{product.id}</TableRowColumn>
-                                        <TableRowColumn>{product.name}</TableRowColumn>
-                                        <TableRowColumn>{product.price}</TableRowColumn>
-                                        <TableRowColumn>{product.category.name}</TableRowColumn>
+                                            <TableRowColumn>{category.id}</TableRowColumn>
+                                            <TableRowColumn>{category.name}</TableRowColumn>
                                         <TableRowColumn style={{ overflow: 'visible' }}>
                                             <IconButton
-                                                onClick={() => { this.props.openEditProduct(product) }}
+                                                onClick={() => { this.props.openEditCategory(category) }}
                                                 tooltip="Editar"
                                                 iconStyle={{ color: grey700 }}
                                                 iconClassName="material-icons"
-                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
+                                                tooltipPosition={i < categories.length - 1 ? 'bottom-center' : 'top-center'}
                                             >create
                                             </IconButton>
                                             <IconButton
-                                                onClick={() => { this.props.openDeleteProductModal(product) }}
+                                                    onClick={() => { this.props.openDeleteCategoryModal(category) }}
                                                 tooltip="Eliminar"
                                                 iconStyle={{ color: grey700 }}
                                                 iconClassName="material-icons"
-                                                tooltipPosition={i < products.length - 1 ? 'bottom-center' : 'top-center'}
+                                                tooltipPosition={i < categories.length - 1 ? 'bottom-center' : 'top-center'}
                                             >remove_circle
                                             </IconButton>
                                         </TableRowColumn>
@@ -68,14 +64,19 @@ class ProductList extends Component {
                         </Table>
                     </CardText>
                     <CardActions>
-                        <FlatButton onClick={this.props.getAllProducts}>
-                            Actualizar
+                        <FlatButton onClick={this.props.showAddNewCategory}>
+                            Agregar nueva
+                        </FlatButton>
+                        <FlatButton onClick={this.props.closeCategoryArea}>
+                            Cancelar
                         </FlatButton>
                     </CardActions>
                 </Card>
+                : 'No hay categorías.'
+                }
             </div>
-        );
+        )
     }
 }
 
-export default ProductList;
+export default CategoryList
