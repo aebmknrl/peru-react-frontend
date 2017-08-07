@@ -10,6 +10,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - [How to be happy?](#how-to-be-happy)
 
 ## Previous Steps
+To run this app, you need use the @RRicardotj API REST and they steps before start here. You can get this api [here](https://github.com/RRicardotj/Peru-s-Company-Test-ApiREST).
 First clone this repo.
 Next, you need to run `npm install` for dependencies installation.
 
