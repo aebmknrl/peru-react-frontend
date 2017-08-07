@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - [Previous Steps](#previous-steps)
   - [Config File](#config-file)
 - [Running the app](#running-the-app)
-- [How to be happy?](#how-to-be-happy?)
+- [How to be happy?](#how-to-be-happy)
 
 ## Previous Steps
 First clone this repo.
