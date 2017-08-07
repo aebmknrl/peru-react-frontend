@@ -6,7 +6,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Table of Contents
 - [Previous Steps](#previous-steps)
   - [Config File](#config-file)
-
+- [Running the app](#running-the-app)
+- [How to be happy?](#how-to-be-happy?)
 
 ## Previous Steps
 First clone this repo.
@@ -23,3 +24,9 @@ export const localserver = {
     apiUrl: 'http://localhost:9001/'
 };
 ```
+
+## Running the app
+You must run `npm install`
+
+## How to be happy?
+Just write to Ali Briceño at twitter **alienriquebm** and hire it! :)
