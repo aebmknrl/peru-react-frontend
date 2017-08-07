@@ -45,6 +45,7 @@ class FormAddProduct extends Component {
                     subtitle="en base de datos"
                 />
                 <CardText>
+                    {categories.length > 0 ? 
                     <div className="FormNewProduct">
                         <div>
                             <FormsyText name="newProductName" hintText="Nombre del producto" required />
@@ -59,11 +60,14 @@ class FormAddProduct extends Component {
                         </div>
 
                     </div>
+                    : 'No existen categorías agregadas. Puede gestionar las categorías en el menú superior derecho, "Gestión de Categorías."'}
                 </CardText>
                 <CardActions>
+                    {categories.length > 0? 
                     <FlatButton type="submit" formNoValidate={true} disabled={!this.state.canSubmit}>
                         Guardar
                     </FlatButton>
+                    : ''}
                     <FlatButton onClick={this.props.TriggerCloseNewProduct}>
                         Cancelar
                     </FlatButton>

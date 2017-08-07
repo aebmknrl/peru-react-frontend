@@ -198,7 +198,6 @@ class Content extends Component {
     }
 
     handleOpenModalDeleteCategory(model) {
-        console.log(model);
         this.setState({
             categoryToDelete: model,
             openModalDeleteCategory: true
@@ -286,7 +285,7 @@ class Content extends Component {
                     title="Confirmar Eliminar"
                     actions={actions}
                     modal={false}
-                    open={this.state.openModalDeleteCategory}
+                    open={this.state.openModalDeleteProduct}
                     onRequestClose={this.handleCloseModalDeleteProduct}
                 >
                     ¿Está seguro que desea eliminar este producto?

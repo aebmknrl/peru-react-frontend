@@ -20,13 +20,13 @@ class CategoryList extends Component {
         var categories = this.props.categoriesList;
         return(
             <div className="CategoryList">
-                {categories ? 
                 <Card>
                     <CardHeader
                         title="Lista de Categorías"
                         subtitle="en base de datos"
                     />
                     <CardText>
+                        {categories.length > 0 ?
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -62,18 +62,17 @@ class CategoryList extends Component {
 
                             </TableBody>
                         </Table>
+                        : 'No existen categorías en el sistema. Pulse el botón "Agregar nueva" para crear una.'}
                     </CardText>
                     <CardActions>
                         <FlatButton onClick={this.props.showAddNewCategory}>
                             Agregar nueva
                         </FlatButton>
                         <FlatButton onClick={this.props.closeCategoryArea}>
-                            Cancelar
+                            Volver a Productos
                         </FlatButton>
                     </CardActions>
                 </Card>
-                : 'No hay categorías.'
-                }
             </div>
         )
     }

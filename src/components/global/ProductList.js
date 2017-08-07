@@ -26,6 +26,7 @@ class ProductList extends Component {
                         subtitle="en base de datos"
                     />
                     <CardText>
+                        {products.length > 0 ? 
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -66,11 +67,14 @@ class ProductList extends Component {
 
                             </TableBody>
                         </Table>
+                        : 'No hay productos en el sistema. Para crear uno nuevo, haga clic en el menú superior derecho y a continuación, "Nuevo Producto".'}
                     </CardText>
                     <CardActions>
+                        {products.length > 0 ? 
                         <FlatButton onClick={this.props.getAllProducts}>
                             Actualizar
                         </FlatButton>
+                        : '' }
                     </CardActions>
                 </Card>
             </div>
