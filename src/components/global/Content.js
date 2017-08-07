@@ -12,6 +12,9 @@ import CategoryList from './CategoryList'
 import FormAddCategory from './FormAddCategory'
 import FormEditCategory from './FormEditCategory'
 
+// Config
+import {localserver} from '../config'
+
 // Styles
 import './css/Content.css';
 
@@ -54,7 +57,7 @@ class Content extends Component {
     }
     addNewProduct(model){
         let self = this;
-        axios.post('http://localhost:9001/products/create_product', { productName: model.newProductName, categoryId: model.newProductCategory, price: model.newProductPrice})
+        axios.post(localserver.apiUrl + 'products/create_product', { productName: model.newProductName, categoryId: model.newProductCategory, price: model.newProductPrice})
             .then(function (response) {
                 //console.log(response);
                 self.props.TriggerCloseNewProduct();
@@ -67,7 +70,7 @@ class Content extends Component {
     editProduct(model){
         //console.log(model);
          let self = this;
-         axios.post('http://localhost:9001/products/update_product', { productId: model.editProductId, productName: model.editProductName, categoryId: model.editProductCategory, price: model.editProductPrice})
+         axios.post(localserver.apiUrl + 'products/update_product', { productId: model.editProductId, productName: model.editProductName, categoryId: model.editProductCategory, price: model.editProductPrice})
              .then(function (response) {
                  //console.log(response);
                  self.TriggerCloseEditProduct();
@@ -81,7 +84,7 @@ class Content extends Component {
     deleteProduct(){
         let self = this;
         var productToDelete = self.state.productToDelete;
-        axios.delete('http://localhost:9001/products/delete_product', {data: {productId: productToDelete.id}})
+        axios.delete(localserver.apiUrl + 'products/delete_product', {data: {productId: productToDelete.id}})
             .then(function (response) {
                 self.handleCloseModalDeleteProduct();
                 self.getAllProducts();
@@ -94,7 +97,7 @@ class Content extends Component {
 
     getAllProducts() {
         let self = this;
-        axios.get('http://localhost:9001/products/get_product/0')
+        axios.get(localserver.apiUrl + 'products/get_product/0')
             .then(function (response) {
                 self.setState({
                     products: response.data
@@ -107,7 +110,7 @@ class Content extends Component {
 
     getAllCategories() {
         let self = this;
-        axios.get('http://localhost:9001/products/get_category/0')
+        axios.get(localserver.apiUrl + 'products/get_category/0')
             .then(function (response) {
                 self.setState({
                     categories: response.data
@@ -120,7 +123,7 @@ class Content extends Component {
 
     addNewCategory(model) {
         let self = this;
-        axios.post('http://localhost:9001/products/create_category', { categoryName: model.newCategoryName })
+        axios.post(localserver.apiUrl + 'products/create_category', { categoryName: model.newCategoryName })
             .then(function (response) {
                 //console.log(response);
                 self.closeAddNewCategory();
@@ -134,7 +137,7 @@ class Content extends Component {
     deleteCategory() {
         let self = this;
         var categoryToDelete = self.state.categoryToDelete;
-        axios.delete('http://localhost:9001/products/delete_category', { data: { categoryId: categoryToDelete.id } })
+        axios.delete(localserver.apiUrl + 'products/delete_category', { data: { categoryId: categoryToDelete.id } })
             .then(function (response) {
                 self.handleCloseModalDeleteCategory();
                 self.getAllCategories();
@@ -146,7 +149,7 @@ class Content extends Component {
 
     editCategory(model){
         let self = this;
-        axios.post('http://localhost:9001/products/update_category', { categoryId: model.editCategoryId, categoryName: model.editCategoryName })
+        axios.post(localserver.apiUrl + 'products/update_category', { categoryId: model.editCategoryId, categoryName: model.editCategoryName })
             .then(function (response) {
                 //console.log(response);
                 self.closeEditCategory()

@@ -38,7 +38,7 @@ class FormAddCategory extends Component {
             >
                 <Card>
                     <CardHeader
-                        title="Agregar Producto"
+                        title="Agregar Categoría"
                         subtitle="en base de datos"
                     />
                     <CardText>
